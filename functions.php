@@ -70,7 +70,7 @@ add_action('wp_enqueue_scripts', 'wcl_theme_enqueue_scripts');
 
 function my_acf_init()
 {
-  acf_update_setting('google_api_key', '');
+  acf_update_setting('google_api_key', 'some-google-api-key'); // Replace with your actual Google API key
 }
 add_action('acf/init', 'my_acf_init');
 
