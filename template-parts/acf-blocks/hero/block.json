@@ -1,0 +1,19 @@
+{
+  "name": "wcl/hero",
+  "version": "0.0.1",
+  "title": "Hero Block",
+  "description": "A custom hero block for displaying a prominent section on the page.",
+  "style": ["file:./style.css"],
+  "script": ["file:./script.js"],
+  "category": "webcomplete",
+  "icon": "block-default",
+  "keywords": ["webcomplete"],
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "render.php",
+    "validate": "false"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

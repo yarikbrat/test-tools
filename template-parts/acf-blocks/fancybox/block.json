@@ -1,0 +1,19 @@
+{
+  "name": "wcl/fancybox",
+  "version": "0.0.1",
+  "title": "Funcybox Block",
+  "description": "A custom ai tools block",
+  "style": ["file:./style.css"],
+  "script": ["file:./script.js"],
+  "category": "webcomplete",
+  "icon": "block-default",
+  "keywords": ["webcomplete"],
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "render.php",
+    "validate": "false"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

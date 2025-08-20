@@ -1,0 +1,25 @@
+{
+  "name": "wcl/example",
+  "version": "0.0.1",
+  "title": "Example",
+  "description": "A custom example block",
+  "style": [
+    "file:./style.css"
+  ],
+  "script": [
+    "file:./script.js"
+  ],
+  "category": "webcomplete",
+  "icon": "block-default",
+  "keywords": [
+    "webcomplete"
+  ],
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "render.php",
+    "validate": "false"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

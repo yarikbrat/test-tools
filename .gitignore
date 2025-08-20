@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# env files
+.env
+
+# laravel mix
+/mix-manifest.json
+/mix.js.map
+
+# IDE
+.idea
+.vscode

@@ -1,0 +1,19 @@
+{
+  "name": "wcl/container",
+  "title": "Container",
+  "description": "A custom Container block",
+  "category": "webcomplete",
+  "icon": "archive",
+  "keywords": [
+    "webcomplete",
+    "steps"
+  ],
+  "acf": {
+    "mode": "preview",
+    "renderTemplate": "render.php",
+    "validate": "false"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

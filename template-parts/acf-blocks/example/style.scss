@@ -1,0 +1,10 @@
+// @import "assets/scss/utils/media";
+// @import "assets/scss/utils/mixings";
+
+.wcl-example {
+  display: flex;
+
+  &__content {
+    display: flex;
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "wcl/tools",
+  "version": "0.0.1",
+  "title": "Ai Tools Block",
+  "description": "A custom ai tools block",
+  "style": ["file:./style.css"],
+  "script": ["file:./script.js"],
+  "category": "webcomplete",
+  "icon": "block-default",
+  "keywords": ["webcomplete"],
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "render.php",
+    "validate": "false"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

@@ -1,0 +1,45 @@
+// @import "assets/scss/utils/media";
+// @import "assets/scss/utils/mixings";
+
+@font-face {
+  font-family: "TildaSans";
+  src: url("../../../assets/fonts/TildaSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.wcl-compare-block {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: -1px;
+
+  &__card {
+    text-decoration: none;
+    flex: 1 1 20%;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 1px;
+  }
+
+  &__img-wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  &__img {
+    width: 50%;
+    display: block;
+    height: auto;
+    object-fit: cover;
+  }
+
+  &__title {
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+}

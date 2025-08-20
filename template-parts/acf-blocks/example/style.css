@@ -1,0 +1,6 @@
+.wcl-example {
+  display: flex;
+}
+.wcl-example__content {
+  display: flex;
+}

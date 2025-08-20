@@ -1,0 +1,10 @@
+.wcl-button {
+  @include wcl-reset-link;
+  @include wcl-reset-button;
+
+  padding: 14px 35px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 100px;
+  text-align: center;
+}
