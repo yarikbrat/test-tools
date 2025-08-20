@@ -70,7 +70,7 @@ add_action('wp_enqueue_scripts', 'wcl_theme_enqueue_scripts');
 
 function my_acf_init()
 {
-  acf_update_setting('google_api_key', 'AIzaSyC5bH31kwKqG6gEJjZm04E74Fr866Niwdc');
+  acf_update_setting('google_api_key', '');
 }
 add_action('acf/init', 'my_acf_init');
 
