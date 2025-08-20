@@ -1,5 +1,5 @@
 <?php
-/* Template Name: Log In / Register */
+
 get_header();
 ?>
 
@@ -7,7 +7,8 @@ get_header();
   <h2 class="mb-4">Registration</h2>
 
   <form id="wcl-register-form" enctype="multipart/form-data" class="needs-validation" novalidate>
-    <input type="hidden" name="wcl_nonce" value="<?php echo wp_create_nonce('wcl_rest_nonce'); ?>">
+    <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('wcl_nonce'); ?>">
+
     <div class="mb-3">
       <label for="wcl_username" class="form-label">User name*</label>
       <input type="text" name="username" id="wcl_username" class="form-control" required>

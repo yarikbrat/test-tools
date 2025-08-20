@@ -1,93 +1,93 @@
 <?php
 
 //register users
-// function wcl_register_user_callback()
-// {
-//   $ajax_response = ['success' => 0, 'message' => '', 'html' => ''];
+function wcl_register_user_callback()
+{
+  $ajax_response = ['success' => 0, 'message' => '', 'html' => ''];
 
-//   if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wcl_nonce')) {
-//     $ajax_response['message'] = 'Nonce is missing or invalid';
-//     wp_send_json($ajax_response);
-//   }
+  if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wcl_nonce')) {
+    $ajax_response['message'] = 'Nonce is missing or invalid';
+    wp_send_json($ajax_response);
+  }
 
-//   $username        = sanitize_user($_POST['username']);
-//   $email           = sanitize_email($_POST['email']);
-//   $password        = $_POST['password'];
-//   $password_repeat = $_POST['password_repeat'];
+  $username        = sanitize_user($_POST['username']);
+  $email           = sanitize_email($_POST['email']);
+  $password        = $_POST['password'];
+  $password_repeat = $_POST['password_repeat'];
 
-//   if (empty($username) || empty($email) || empty($password)) {
-//     $ajax_response['message'] = 'Please fill in all required fields.';
-//     wp_send_json($ajax_response);
-//   }
+  if (empty($username) || empty($email) || empty($password)) {
+    $ajax_response['message'] = 'Please fill in all required fields.';
+    wp_send_json($ajax_response);
+  }
 
-//   if ($password !== $password_repeat) {
-//     $ajax_response['message'] = 'The passwords do not match.';
-//     wp_send_json($ajax_response);
-//   }
+  if ($password !== $password_repeat) {
+    $ajax_response['message'] = 'The passwords do not match.';
+    wp_send_json($ajax_response);
+  }
 
-//   if (strlen($password) < 8 || !preg_match('/[a-zA-Z]/', $password) || !preg_match('/\d/', $password)) {
-//     $ajax_response['message'] = 'Password must be at least 8 characters long and contain at least one letter and one number.';
-//     wp_send_json($ajax_response);
-//   }
+  if (strlen($password) < 8 || !preg_match('/[a-zA-Z]/', $password) || !preg_match('/\d/', $password)) {
+    $ajax_response['message'] = 'Password must be at least 8 characters long and contain at least one letter and one number.';
+    wp_send_json($ajax_response);
+  }
 
-//   if (username_exists($username) || email_exists($email)) {
-//     $ajax_response['message'] = 'A user with that username or email already exists.';
-//     wp_send_json($ajax_response);
-//   }
+  if (username_exists($username) || email_exists($email)) {
+    $ajax_response['message'] = 'A user with that username or email already exists.';
+    wp_send_json($ajax_response);
+  }
 
-//   //Processing avatar in temporary folder
-//   $avatar_tmp = '';
-//   if (!empty($_FILES['avatar']['name'])) {
-//     require_once ABSPATH . 'wp-admin/includes/file.php';
+  //Processing avatar in temporary folder
+  $avatar_tmp = '';
+  if (!empty($_FILES['avatar']['name'])) {
+    require_once ABSPATH . 'wp-admin/includes/file.php';
 
-//     add_filter('upload_dir', '__tmp_avatar_upload_dir');
-//     $uploaded = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
-//     remove_filter('upload_dir', '__tmp_avatar_upload_dir');
+    add_filter('upload_dir', '__tmp_avatar_upload_dir');
+    $uploaded = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
+    remove_filter('upload_dir', '__tmp_avatar_upload_dir');
 
-//     if (isset($uploaded['file'])) {
-//       $avatar_tmp = $uploaded['file'];
-//     }
-//   }
-
-
-//   $token = bin2hex(random_bytes(16));
-//   $pending_data = [
-//     'username'   => $username,
-//     'email'      => $email,
-//     'password'   => $password,
-//     'avatar_tmp' => $avatar_tmp,
-//   ];
-
-//   $time = 24 * HOUR_IN_SECONDS;
+    if (isset($uploaded['file'])) {
+      $avatar_tmp = $uploaded['file'];
+    }
+  }
 
 
-//   set_transient('wcl_pending_reg_' . $token, $pending_data, 0);
+  $token = bin2hex(random_bytes(16));
+  $pending_data = [
+    'username'   => $username,
+    'email'      => $email,
+    'password'   => $password,
+    'avatar_tmp' => $avatar_tmp,
+  ];
 
-//   // clean in 24 hours
-//   wp_schedule_single_event(time() + $time, 'wcl_cleanup_unconfirmed', [$token]);
+  $time = 24 * HOUR_IN_SECONDS;
 
 
-//   $confirm_link = add_query_arg('wcl_reg_token', $token, site_url('/confirm-registration/'));
-//   $subject = 'Confirm your registration';
-//   $message = "Hello $username,\n\nPlease confirm your registration by clicking the link below:\n\n$confirm_link\n\nIf you didn't request this, just ignore this email.";
-//   $headers = ['Content-Type: text/plain; charset=UTF-8'];
-//   wp_mail($email, $subject, $message, $headers);
+  set_transient('wcl_pending_reg_' . $token, $pending_data, 0);
 
-//   $ajax_response['success'] = 1;
-//   $ajax_response['message'] = 'Registration initiated. Please check your email to confirm.';
-//   wp_send_json($ajax_response);
-// }
+  // clean in 24 hours
+  wp_schedule_single_event(time() + $time, 'wcl_cleanup_unconfirmed', [$token]);
 
-// // Temporary folder for avatars
-// function __tmp_avatar_upload_dir($dirs)
-// {
-//   $dirs['subdir'] = '/tmp-avatars' . $dirs['subdir'];
-//   $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
-//   $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
-//   return $dirs;
-// }
 
-// add_action('wp_ajax_nopriv_wcl_register_user', 'wcl_register_user_callback');
+  $confirm_link = add_query_arg('wcl_reg_token', $token, site_url('/confirm-registration/'));
+  $subject = 'Confirm your registration';
+  $message = "Hello $username,\n\nPlease confirm your registration by clicking the link below:\n\n$confirm_link\n\nIf you didn't request this, just ignore this email.";
+  $headers = ['Content-Type: text/plain; charset=UTF-8'];
+  wp_mail($email, $subject, $message, $headers);
+
+  $ajax_response['success'] = 1;
+  $ajax_response['message'] = 'Registration initiated. Please check your email to confirm.';
+  wp_send_json($ajax_response);
+}
+
+// Temporary folder for avatars
+function __tmp_avatar_upload_dir($dirs)
+{
+  $dirs['subdir'] = '/tmp-avatars' . $dirs['subdir'];
+  $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+  $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+  return $dirs;
+}
+
+add_action('wp_ajax_nopriv_wcl_register_user', 'wcl_register_user_callback');
 
 
 //account
@@ -268,71 +268,71 @@ add_action('wp_ajax_nopriv_wcl_password_reset_handler', 'wcl_password_reset_hand
 
 
 //register user via REST API
-add_action('rest_api_init', function () {
-  register_rest_route('wcl/v1', '/register', [
-    'methods' => 'POST',
-    'callback' => 'wcl_rest_register_user',
-    'permission_callback' => '__return_true',
-    'args' => [
-      'username' => ['required' => true, 'type' => 'string'],
-      'email' => ['required' => true, 'type' => 'string'],
-      'password' => ['required' => true, 'type' => 'string'],
-      'password_repeat' => ['required' => true, 'type' => 'string'],
-      'wcl_nonce' => ['required' => true, 'type' => 'string'],
-    ],
-  ]);
-});
+// add_action('rest_api_init', function () {
+//   register_rest_route('wcl/v1', '/register', [
+//     'methods' => 'POST',
+//     'callback' => 'wcl_rest_register_user',
+//     'permission_callback' => '__return_true',
+//     'args' => [
+//       'username' => ['required' => true, 'type' => 'string'],
+//       'email' => ['required' => true, 'type' => 'string'],
+//       'password' => ['required' => true, 'type' => 'string'],
+//       'password_repeat' => ['required' => true, 'type' => 'string'],
+//       'wcl_nonce' => ['required' => true, 'type' => 'string'],
+//     ],
+//   ]);
+// });
 
-function wcl_rest_register_user(WP_REST_Request $request)
-{
-  $nonce = $request->get_param('wcl_nonce');
-  if (! $nonce || ! wp_verify_nonce($nonce, 'wcl_rest_nonce')) {
-    return new WP_Error('invalid_nonce', 'Invalid or missing nonce', ['status' => 403]);
-  }
+// function wcl_rest_register_user(WP_REST_Request $request)
+// {
+//   $nonce = $request->get_param('wcl_nonce');
+//   if (! $nonce || ! wp_verify_nonce($nonce, 'wcl_rest_nonce')) {
+//     return new WP_Error('invalid_nonce', 'Invalid or missing nonce', ['status' => 403]);
+//   }
 
-  $username = sanitize_user($request['username']);
-  $email = sanitize_email($request['email']);
-  $password = $request['password'];
-  $password_repeat = $request['password_repeat'];
+//   $username = sanitize_user($request['username']);
+//   $email = sanitize_email($request['email']);
+//   $password = $request['password'];
+//   $password_repeat = $request['password_repeat'];
 
-  if ($password !== $password_repeat) {
-    return new WP_Error('password_mismatch', 'Passwords do not match', ['status' => 400]);
-  }
+//   if ($password !== $password_repeat) {
+//     return new WP_Error('password_mismatch', 'Passwords do not match', ['status' => 400]);
+//   }
 
-  if (username_exists($username) || email_exists($email)) {
-    return new WP_Error('user_exists', 'Username or email already exists', ['status' => 400]);
-  }
+//   if (username_exists($username) || email_exists($email)) {
+//     return new WP_Error('user_exists', 'Username or email already exists', ['status' => 400]);
+//   }
 
-  $avatar_tmp = '';
-  if (!empty($_FILES['avatar']['name'])) {
-    require_once ABSPATH . 'wp-admin/includes/file.php';
-    add_filter('upload_dir', '__tmp_avatar_upload_dir');
-    $uploaded = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
-    remove_filter('upload_dir', '__tmp_avatar_upload_dir');
+//   $avatar_tmp = '';
+//   if (!empty($_FILES['avatar']['name'])) {
+//     require_once ABSPATH . 'wp-admin/includes/file.php';
+//     add_filter('upload_dir', '__tmp_avatar_upload_dir');
+//     $uploaded = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
+//     remove_filter('upload_dir', '__tmp_avatar_upload_dir');
 
-    if (isset($uploaded['file'])) {
-      $avatar_tmp = $uploaded['file'];
-    }
-  }
+//     if (isset($uploaded['file'])) {
+//       $avatar_tmp = $uploaded['file'];
+//     }
+//   }
 
-  $token = bin2hex(random_bytes(16));
-  $pending_data = compact('username', 'email', 'password', 'avatar_tmp');
+//   $token = bin2hex(random_bytes(16));
+//   $pending_data = compact('username', 'email', 'password', 'avatar_tmp');
 
-  set_transient('wcl_pending_reg_' . $token, $pending_data, 0);
+//   set_transient('wcl_pending_reg_' . $token, $pending_data, 0);
 
-  wp_schedule_single_event(time() + 24 * HOUR_IN_SECONDS, 'wcl_cleanup_unconfirmed', [$token]);
+//   wp_schedule_single_event(time() + 24 * HOUR_IN_SECONDS, 'wcl_cleanup_unconfirmed', [$token]);
 
-  $confirm_link = add_query_arg('wcl_reg_token', $token, site_url('/confirm-registration/'));
-  wp_mail($email, 'Confirm your registration', "Hello $username,\n\nConfirm: $confirm_link");
+//   $confirm_link = add_query_arg('wcl_reg_token', $token, site_url('/confirm-registration/'));
+//   wp_mail($email, 'Confirm your registration', "Hello $username,\n\nConfirm: $confirm_link");
 
-  return ['success' => true, 'message' => 'Registration initiated. Check your email.'];
-}
+//   return ['success' => true, 'message' => 'Registration initiated. Check your email.'];
+// }
 
-// Temporary folder for avatars
-function __tmp_avatar_upload_dir($dirs)
-{
-  $dirs['subdir'] = '/tmp-avatars' . $dirs['subdir'];
-  $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
-  $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
-  return $dirs;
-}
+// // Temporary folder for avatars
+// function __tmp_avatar_upload_dir($dirs)
+// {
+//   $dirs['subdir'] = '/tmp-avatars' . $dirs['subdir'];
+//   $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+//   $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+//   return $dirs;
+// }

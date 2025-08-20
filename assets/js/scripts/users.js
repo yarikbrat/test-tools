@@ -1,4 +1,92 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // const form = document.getElementById("wcl-register-form");
+  // const messageEl = document.getElementById("wcl-register-message");
+
+  // if (form && messageEl) {
+  //   // show/hide password
+  //   const toggleBtn = document.getElementById("togglePassword");
+  //   const passwordInput = document.getElementById("wcl_password");
+  //   if (toggleBtn && passwordInput) {
+  //     toggleBtn.addEventListener("click", () => {
+  //       if (passwordInput.type === "password") {
+  //         passwordInput.type = "text";
+  //         toggleBtn.textContent = "Hide";
+  //       } else {
+  //         passwordInput.type = "password";
+  //         toggleBtn.textContent = "Show";
+  //       }
+  //     });
+  //   }
+
+  //   // JustValidate js
+  //   const validation = new JustValidate("#wcl-register-form", {
+  //     errorFieldCssClass: "is-invalid",
+  //     errorLabelStyle: { color: "red", fontSize: "14px" },
+  //   });
+
+  //   validation
+  //     .addField("#wcl_username", [
+  //       { rule: "required", errorMessage: "Username is required" },
+  //       {
+  //         rule: "minLength",
+  //         value: 3,
+  //         errorMessage: "Username must be at least 3 characters",
+  //       },
+  //     ])
+  //     .addField("#wcl_email", [
+  //       { rule: "required", errorMessage: "Email is required" },
+  //       { rule: "email", errorMessage: "Invalid email format" },
+  //     ])
+  //     .addField("#wcl_password", [
+  //       { rule: "required", errorMessage: "Password is required" },
+  //       {
+  //         validator: (value) => {
+  //           const hasLetter = /[a-zA-Z]/.test(value);
+  //           const hasNumber = /\d/.test(value);
+  //           return value.length >= 8 && hasLetter && hasNumber;
+  //         },
+  //         errorMessage:
+  //           "Password must be at least 8 chars, include letters and numbers",
+  //       },
+  //     ])
+  //     .addField("#wcl_password_repeat", [
+  //       { rule: "required", errorMessage: "Please confirm your password" },
+  //       {
+  //         validator: (value, fields) =>
+  //           value === fields["#wcl_password"].elem.value,
+  //         errorMessage: "Passwords do not match",
+  //       },
+  //     ])
+  //     .onSuccess(async (event) => {
+  //       event.preventDefault();
+  //       messageEl.innerHTML = "";
+
+  //       const formData = new FormData(form);
+
+  //       try {
+  //         const response = await fetch("/wp-json/wcl/v1/register", {
+  //           method: "POST",
+  //           body: formData,
+  //         });
+
+  //         const result = await response.json();
+
+  //         if (result.success) {
+  //           messageEl.innerHTML =
+  //             '<p style="color:green;">Registration initiated. Please check your email to confirm.</p>';
+  //           form.reset();
+  //         } else {
+  //           messageEl.innerHTML = `<p style="color:red;">${
+  //             result.message || "Error"
+  //           }</p>`;
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //         messageEl.innerHTML =
+  //           '<p style="color:red;">Error submitting form</p>';
+  //       }
+  //     });
+  // }
   const form = document.getElementById("wcl-register-form");
   const messageEl = document.getElementById("wcl-register-message");
 
@@ -57,34 +145,33 @@ document.addEventListener("DOMContentLoaded", () => {
           errorMessage: "Passwords do not match",
         },
       ])
-      .onSuccess(async (event) => {
+      .onSuccess((event) => {
         event.preventDefault();
         messageEl.innerHTML = "";
 
         const formData = new FormData(form);
+        formData.append("action", "wcl_register_user"); // WordPress AJAX action
 
-        try {
-          const response = await fetch("/wp-json/wcl/v1/register", {
-            method: "POST",
-            body: formData,
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
+        fetch(config.ajax_url, {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            if (result.success) {
+              messageEl.innerHTML =
+                '<p style="color:green;">' + result.message + "</p>";
+              form.reset();
+            } else {
+              messageEl.innerHTML =
+                '<p style="color:red;">' + (result.message || "Error") + "</p>";
+            }
+          })
+          .catch((err) => {
+            console.error(err);
             messageEl.innerHTML =
-              '<p style="color:green;">Registration initiated. Please check your email to confirm.</p>';
-            form.reset();
-          } else {
-            messageEl.innerHTML = `<p style="color:red;">${
-              result.message || "Error"
-            }</p>`;
-          }
-        } catch (error) {
-          console.error(error);
-          messageEl.innerHTML =
-            '<p style="color:red;">Error submitting form</p>';
-        }
+              '<p style="color:red;">Error submitting form</p>';
+          });
       });
   }
 
