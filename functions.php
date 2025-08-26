@@ -9,8 +9,8 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 /** @desc Using an .env.example file for security */
-// define( 'RECAPTCHA_SECRET_KEY', $_ENV[ 'RECAPTCHA_SECRET_KEY' ] );
-// define( 'RECAPTCHA_SITE_KEY', $_ENV[ 'RECAPTCHA_SITE_KEY' ] );
+define('RECAPTCHA_SECRET_KEY', $_ENV['RECAPTCHA_SECRET_KEY']);
+define('RECAPTCHA_SITE_KEY', $_ENV['RECAPTCHA_SITE_KEY']);
 // define( 'EMAIL_SENDER', $_ENV[ 'EMAIL_SENDER' ] );
 
 /** @desc Other variables */
@@ -56,6 +56,8 @@ function wcl_theme_enqueue_scripts()
 
   wp_enqueue_script('sweet-alert', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', [], WCL_THEME_VERSION, true);
 
+  wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/enterprise.js?render=6LeKma4rAAAAAMRERek1NdYVKMRwknzixYipFNvI', [], WCL_THEME_VERSION, true);
+
   wp_enqueue_script('wcl-scripts', get_template_directory_uri() . '/assets/js/wcl-scripts.js', ['bootstrap-scripts', 'funcybox-scripts', 'validate', 'sweet-alert'], WCL_THEME_VERSION, true);
 
   wp_localize_script('wcl-scripts', 'config', [
@@ -66,6 +68,44 @@ function wcl_theme_enqueue_scripts()
 }
 
 add_action('wp_enqueue_scripts', 'wcl_theme_enqueue_scripts');
+
+function wcl_add_async_defer_attributes($tag, $handle, $src)
+{
+  // async + defer
+  $async_defer_scripts = [
+    'google-recaptcha',
+  ];
+
+  // async
+  $async_scripts = [];
+
+  // defer
+  $defer_scripts = [
+    'bootstrap-scripts',
+    'funcybox-scripts',
+    'validate',
+    'sweet-alert',
+    'wcl-scripts',
+  ];
+
+  if (in_array($handle, $async_defer_scripts, true)) {
+    return str_replace('<script ', '<script async defer ', $tag);
+  }
+
+  if (in_array($handle, $async_scripts, true)) {
+    return str_replace('<script ', '<script async ', $tag);
+  }
+
+  if (in_array($handle, $defer_scripts, true)) {
+    return str_replace('<script ', '<script defer ', $tag);
+  }
+
+  return $tag;
+}
+add_filter('script_loader_tag', 'wcl_add_async_defer_attributes', 10, 3);
+
+
+
 
 
 function my_acf_init()
@@ -324,6 +364,9 @@ require_once get_theme_file_path('/inc/actions/autocomplete.php');
 require_once get_theme_file_path('/inc/actions/filter.php');
 require_once get_theme_file_path('/inc/actions/compare.php');
 require_once get_theme_file_path('/inc/actions/users.php');
+require_once get_theme_file_path('/inc/actions/query.php');
+
+require_once get_theme_file_path('/inc/test-acf-blocks.php');
 
 // API
 // require_once get_theme_file_path( '/inc/api/api.php' );

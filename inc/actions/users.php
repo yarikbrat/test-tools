@@ -10,6 +10,11 @@ function wcl_register_user_callback()
     wp_send_json($ajax_response);
   }
 
+  if (empty($_POST['recaptcha_token']) || !wcl_captcha_validation($_POST['recaptcha_token'])) {
+    $ajax_response['message'] = 'reCAPTCHA verification failed.';
+    wp_send_json($ajax_response);
+  }
+
   $username        = sanitize_user($_POST['username']);
   $email           = sanitize_email($_POST['email']);
   $password        = $_POST['password'];
@@ -36,18 +41,37 @@ function wcl_register_user_callback()
   }
 
   //Processing avatar in temporary folder
+  if ($_FILES['avatar']['size'] > 2 * 1024 * 1024) { // 2 MB
+    $ajax_response['message'] = 'File is too large.';
+    wp_send_json($ajax_response);
+  }
+
   $avatar_tmp = '';
   if (!empty($_FILES['avatar']['name'])) {
     require_once ABSPATH . 'wp-admin/includes/file.php';
 
+    $filetype = wp_check_filetype_and_ext($_FILES['avatar']['tmp_name'], $_FILES['avatar']['name']);
+    $allowed  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    if (!in_array($filetype['ext'], $allowed)) {
+      $ajax_response['message'] = 'Invalid file type.';
+      wp_send_json($ajax_response);
+    }
+
+
     add_filter('upload_dir', '__tmp_avatar_upload_dir');
+
     $uploaded = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
+
+
     remove_filter('upload_dir', '__tmp_avatar_upload_dir');
 
     if (isset($uploaded['file'])) {
       $avatar_tmp = $uploaded['file'];
     }
   }
+
+
 
 
   $token = bin2hex(random_bytes(16));
@@ -69,7 +93,7 @@ function wcl_register_user_callback()
 
   $confirm_link = add_query_arg('wcl_reg_token', $token, site_url('/confirm-registration/'));
   $subject = 'Confirm your registration';
-  $message = "Hello $username,\n\nPlease confirm your registration by clicking the link below:\n\n$confirm_link\n\nIf you didn't request this, just ignore this email.";
+  $message = "Hello " . esc_html($username) . ",\n\nPlease confirm your registration by clicking the link below:\n\n$confirm_link\n\nIf you didn't request this, just ignore this email.";
   $headers = ['Content-Type: text/plain; charset=UTF-8'];
   wp_mail($email, $subject, $message, $headers);
 

@@ -1,3 +1,3 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("ACF Test Block JS loaded");
+  console.log("Hero Block Test Loaded");
 });

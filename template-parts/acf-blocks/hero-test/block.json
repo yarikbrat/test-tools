@@ -1,11 +1,11 @@
 {
-  "name": "wcl/hero",
+  "name": "hero-test",
   "version": "0.0.1",
-  "title": "Hero Block",
+  "title": "Hero Block Test",
   "description": "A custom hero block for displaying a prominent section on the page.",
-  "style": ["file:./style.css"],
+  "style": "file:./style/style.min.css",
   "script": ["file:./script.js"],
-  "category": "webcomplete",
+  "category": "layout",
   "icon": "block-default",
   "keywords": ["webcomplete"],
   "acf": {

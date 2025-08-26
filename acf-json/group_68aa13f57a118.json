@@ -1,9 +1,9 @@
 {
-    "key": "group_68a5a110374eb",
-    "title": "test",
+    "key": "group_68aa13f57a118",
+    "title": "new-test-block",
     "fields": [
         {
-            "key": "field_68a5a11058561",
+            "key": "field_68aa13f5d196e",
             "label": "title",
             "name": "title",
             "aria-label": "",
@@ -42,5 +42,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1755685156
+    "modified": 1755977632
 }

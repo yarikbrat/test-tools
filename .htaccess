@@ -1,0 +1,93 @@
+# Запобігання перегляду директорій
+Options -Indexes
+
+# Приховування версії WordPress (якщо не зроблено через functions.php)
+# Цей метод може бути менш ефективним, ніж wp_generator hook у functions.php,
+# але додає додатковий рівень захисту
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} wp-admin=
+    RewriteCond %{QUERY_STRING} !wp-admin=0
+    RewriteRule ^(.*) - [L]
+    RewriteRule ^wp-admin/?$ wp-admin/index.php [R=301,L]
+</IfModule>
+
+# Відключення XML-RPC
+<Files xmlrpc.php>
+    Order Deny,Allow
+    Deny from all
+    # Якщо вам потрібно використовувати XML-RPC для певних сервісів (наприклад, Jetpack),
+    # ви можете дозволити доступ з конкретних IP-адрес:
+    # Allow from 192.168.1.1
+</Files>
+
+# Заголовки HTTP-безпеки
+# Допомагають захистити від XSS, Clickjacking та MIME-Sniffing
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+    # Content-Security-Policy (CSP) - складніше налаштовувати, вимагає детального тестування
+    # Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; media-src 'self'; object-src 'none';"
+    # Заголовок Strict-Transport-Security (HSTS) - вимагає HTTPS
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+</IfModule>
+
+# Захист wp-config.php
+# Запобігає доступу до файлу wp-config.php через веб
+<Files wp-config.php>
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Захист файлів .htaccess та .htpasswd
+# Запобігає доступу до самих файлів конфігурації сервера
+<FilesMatch "^\.ht">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Запобігання виконанню PHP у директорії завантажень
+# Це критично важливо, якщо зловмисник зможе завантажити шкідливий PHP-файл ??????????????
+# <Directory /wp-content/uploads/>
+#     <Files *.php>
+#         Order Deny,Allow
+#         Deny from all
+#     </Files>
+# </Directory>
+
+# Обмеження доступу до wp-login.php (замініть на свій IP або діапазон)
+# ВИКОРИСТОВУЙТЕ З ОБЕРЕЖНІСТЮ! Якщо ваш IP зміниться, ви не зможете увійти.
+# Замість цього, краще використовувати плагіни для зміни URL входу або 2FA.
+# <Files wp-login.php>
+#     Order Deny,Allow
+#     Deny from all
+#     Allow from 123.456.789.000 # Ваш IP-адрес
+# </Files>
+
+# Зміна URL входу (якщо ви вирішили робити це вручну через .htaccess)
+# Замініть /my-login на бажаний URL
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteRule ^my-login$ /wp-login.php [QSA,L]
+# </IfModule>
+
+# Перенаправлення HTTP на HTTPS (рекомендовано, якщо у вас є SSL)
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+
+# ПОЧАТОК WordPress
+# Це стандартні правила WordPress, не змінюйте їх, якщо не впевнені
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# КІНЕЦЬ WordPress
